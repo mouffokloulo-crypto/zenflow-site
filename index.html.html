@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenFlow — Focus. Build. Ship.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060810;
+    --bg2: #0a0d1a;
+    --card: #0d1120;
+    --border: #1a2040;
+    --accent: #4f8ef7;
+    --accent2: #2563eb;
+    --text: #e8eaf6;
+    --muted: #4a5680;
+    --glow: 0 0 60px rgba(79,142,247,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+  .orb1 { width: 600px; height: 600px; background: rgba(79,142,247,0.07); top: -200px; left: -100px; }
+  .orb2 { width: 400px; height: 400px; background: rgba(37,99,235,0.05); bottom: 0; right: -100px; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 22px 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(6,8,16,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 600; color: var(--accent); }
+  .logo span { color: var(--text); }
+
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta { color: #fff !important;
+    padding: 11px 28px; background: var(--accent); color: #fff;
+    border: none; border-radius: 6px; font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 0 25px rgba(79,142,247,0.3);
+  }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 0 40px rgba(79,142,247,0.5); }
+
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 140px 20px 80px;
+  }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 18px; background: rgba(79,142,247,0.07);
+    border: 1px solid rgba(79,142,247,0.25); border-radius: 100px;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 35px;
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    animation: fadeUp 0.7s ease both;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(38px, 5.5vw, 68px); font-weight: 700;
+    line-height: 1.15; letter-spacing: -1px; margin-bottom: 28px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+
+  .hero p {
+    font-size: 19px; color: var(--muted); max-width: 500px;
+    line-height: 1.75; margin-bottom: 50px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .hero-btns { display: flex; gap: 14px; animation: fadeUp 0.7s ease 0.3s both; }
+
+  .btn-primary {
+    padding: 16px 42px; background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; font-family: 'Inter', sans-serif;
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+    box-shadow: 0 0 35px rgba(79,142,247,0.35);
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-3px); box-shadow: 0 0 55px rgba(79,142,247,0.5); }
+
+  .btn-secondary {
+    padding: 16px 42px; background: transparent; color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.04); }
+
+  .stats { display: flex; gap: 80px; margin-top: 80px; animation: fadeUp 0.7s ease 0.4s both; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Inter', sans-serif; font-size: 36px; font-weight: 700; color: var(--accent); display: block; letter-spacing: -1px; }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); position: relative; z-index: 1; }
+
+  .section { position: relative; z-index: 1; padding: 110px 70px; max-width: 1200px; margin: 0 auto; }
+
+  .eyebrow { font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; display: block; }
+
+  .section-title { font-family: 'Inter', sans-serif; font-size: clamp(28px, 3.5vw, 42px); font-weight: 600; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; }
+
+  .section-sub { color: var(--muted); font-size: 17px; max-width: 460px; line-height: 1.75; margin-bottom: 65px; }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  }
+
+  .feature-card { background: var(--card); padding: 40px 36px; transition: all 0.35s; }
+  .feature-card:hover { background: #0f1428; }
+  .feature-card:hover .fi { background: var(--accent); color: #fff; }
+
+  .fi {
+    width: 46px; height: 46px; border-radius: 10px;
+    background: rgba(79,142,247,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 22px; transition: all 0.35s;
+  }
+
+  .feature-card h3 { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.3px; }
+  .feature-card p { color: var(--muted); font-size: 14px; line-height: 1.75; }
+
+  .mockup-wrap { position: relative; z-index: 1; padding: 0 70px 110px; max-width: 1200px; margin: 0 auto; }
+
+  .dashboard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+    box-shadow: 0 60px 120px rgba(0,0,0,0.6), var(--glow);
+  }
+
+  .dash-bar {
+    background: var(--bg2); padding: 14px 22px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+  .dash-url { margin-left: 16px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; padding: 5px 16px; font-size: 12px; color: var(--muted); font-family: monospace; }
+
+  .dash-inner { display: grid; grid-template-columns: 220px 1fr; min-height: 380px; }
+
+  .dash-sidebar { background: var(--bg2); border-right: 1px solid var(--border); padding: 24px 18px; }
+  .sl { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding: 0 10px; font-family: 'Inter', sans-serif; }
+  .si { padding: 10px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+  .si.active { background: rgba(79,142,247,0.1); color: var(--accent); }
+  .si:not(.active) { color: var(--muted); }
+
+  .dash-content { padding: 28px 30px; }
+  .dct { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 24px; letter-spacing: 0; }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+  .task-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    animation: fadeUp 0.4s ease both;
+  }
+  .task-row:nth-child(2){animation-delay:.1s}.task-row:nth-child(3){animation-delay:.2s}.task-row:nth-child(4){animation-delay:.3s}
+
+  .tc { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 10px; }
+  .tc.done { background: var(--accent); color: #fff; font-weight: 700; }
+  .tc.open { border: 1.5px solid var(--border); }
+
+  .tl { flex: 1; font-size: 14px; }
+  .tl.done { text-decoration: line-through; color: var(--muted); }
+
+  .tp { font-size: 11px; padding: 3px 12px; border-radius: 100px; background: rgba(79,142,247,0.1); color: var(--accent); font-family: 'Inter', sans-serif; letter-spacing: 0.5px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  .metric { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .mv { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+  .ml { font-size: 11px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 65px; }
+
+  .price-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 42px 36px; transition: all 0.3s; position: relative; }
+  .price-card:hover { border-color: rgba(79,142,247,0.2); transform: translateY(-4px); }
+  .price-card.hot { border-color: var(--accent); background: linear-gradient(135deg, rgba(79,142,247,0.04), var(--card)); box-shadow: var(--glow); }
+
+  .pt { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 16px; border-radius: 100px; white-space: nowrap; text-transform: uppercase; letter-spacing: 1px; }
+
+  .pn { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+  .pp { font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
+  .pp span { font-size: 16px; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  .pd { color: var(--muted); font-size: 14px; margin: 16px 0 28px; line-height: 1.65; }
+
+  .pf { list-style: none; margin-bottom: 32px; }
+  .pf li { padding: 9px 0; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 10px; }
+  .pf li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+  .bp { width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; transition: all 0.3s; }
+  .bp-g { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .bp-g:hover { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.04); }
+  .bp-s { background: var(--accent); border: none; color: #fff; box-shadow: 0 0 25px rgba(79,142,247,0.25); }
+  .bp-s:hover { background: var(--accent2); transform: translateY(-2px); box-shadow: 0 0 40px rgba(79,142,247,0.4); }
+
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 65px; }
+
+  .testi-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; transition: all 0.3s; }
+  .testi-card:hover { border-color: rgba(79,142,247,0.15); transform: translateY(-3px); }
+
+  .stars { color: var(--accent); font-size: 13px; letter-spacing: 3px; margin-bottom: 18px; }
+  .tq { font-size: 15px; line-height: 1.8; color: var(--text); margin-bottom: 22px; font-weight: 300; }
+  .ta { display: flex; align-items: center; gap: 14px; }
+  .av { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #0a0d1a, var(--accent)); border: 1px solid rgba(79,142,247,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 16px; color: var(--accent); flex-shrink: 0; }
+  .an { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px; }
+  .ar { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .cta-band {
+    position: relative; z-index: 1; text-align: center; padding: 130px 60px;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse at center, rgba(79,142,247,0.06) 0%, transparent 70%);
+    margin: 40px 0;
+  }
+  .cta-band h2 { font-family: 'Inter', sans-serif; font-size: clamp(28px, 4vw, 50px); font-weight: 600; letter-spacing: -0.5px; line-height: 1.05; margin-bottom: 22px; }
+  .cta-band h2 em { font-style: normal; color: var(--accent); }
+  .cta-band p { color: var(--muted); font-size: 18px; margin-bottom: 50px; }
+
+  footer { position: relative; z-index: 1; padding: 50px 70px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--accent); }
+  .fc { color: var(--muted); font-size: 13px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+  @media(max-width:768px){
+    nav{padding:16px 22px}.nav-links{display:none}
+    .section,.mockup-wrap{padding:60px 22px}
+    .features-grid,.pricing-grid,.testi-grid{grid-template-columns:1fr}
+    .stats{gap:35px;flex-wrap:wrap}
+    .dash-inner{grid-template-columns:1fr}.dash-sidebar{display:none}
+    .metrics{grid-template-columns:repeat(2,1fr)}
+    footer{flex-direction:column;gap:20px;text-align:center;padding:40px 22px}
+    .hero-btns{flex-direction:column;align-items:center}
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <div class="logo">Zen<span>Flow</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+  <button class="nav-cta">Get Started Free</button>
+</nav>
+
+<section class="hero">
+  <div class="badge"><span class="badge-dot"></span>Version 2.0 — Now Live</div>
+  <h1>Stop managing.<br>Start <em>shipping.</em></h1>
+  <p>The productivity OS built for makers. Manage tasks, track goals, and ship your best work — all in one focused workspace.</p>
+  <div class="hero-btns">
+    <button class="btn-primary">Try Free for 14 Days</button>
+    <button class="btn-secondary">Watch Demo ▶</button>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="stat-num">50K+</span><span class="stat-label">Active Users</span></div>
+    <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">User Rating</span></div>
+    <div class="stat"><span class="stat-num">3x</span><span class="stat-label">Productivity Boost</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="features">
+  <span class="eyebrow">Features</span>
+  <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+  <p class="section-sub">A focused toolkit designed to eliminate noise and help you do your best work.</p>
+  <div class="features-grid">
+    <div class="feature-card"><div class="fi">⚡</div><h3>Smart Task Engine</h3><p>AI prioritizes your tasks automatically so you always know exactly what to work on next.</p></div>
+    <div class="feature-card"><div class="fi">🎯</div><h3>Goal Tracking</h3><p>Set weekly and monthly targets. Track progress with clean visual dashboards that keep you honest.</p></div>
+    <div class="feature-card"><div class="fi">🧠</div><h3>AI Focus Coach</h3><p>Personal AI that learns your rhythm and suggests the optimal schedule to maximize deep work.</p></div>
+    <div class="feature-card"><div class="fi">📊</div><h3>Time Analytics</h3><p>Detailed weekly reports showing exactly where your time went and how to reclaim it.</p></div>
+    <div class="feature-card"><div class="fi">🔗</div><h3>50+ Integrations</h3><p>Connects natively with Notion, Slack, Linear, GitHub, Google Calendar, and more.</p></div>
+    <div class="feature-card"><div class="fi">🔒</div><h3>Private by Design</h3><p>End-to-end encrypted. Your data is never sold, shared, or used to train models.</p></div>
+  </div>
+</section>
+
+<div class="mockup-wrap">
+  <div class="dashboard">
+    <div class="dash-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <div class="dash-url">app.zenflow.io/dashboard</div>
+    </div>
+    <div class="dash-inner">
+      <div class="dash-sidebar">
+        <div class="sl">Workspace</div>
+        <div class="si active">⚡ Today</div>
+        <div class="si">📋 Projects</div>
+        <div class="si">🎯 Goals</div>
+        <div class="si">📊 Analytics</div>
+        <div class="si">🔗 Integrations</div>
+        <br>
+        <div class="sl">Team</div>
+        <div class="si">👤 Members</div>
+        <div class="si">⚙️ Settings</div>
+      </div>
+      <div class="dash-content">
+        <div class="dct">Today — March 13</div>
+        <div class="task-list">
+          <div class="task-row"><div class="tc done">✓</div><span class="tl done">Weekly team standup</span><span class="tp">Work</span></div>
+          <div class="task-row"><div class="tc done">✓</div><span class="tl done">Review Q1 sales report</span><span class="tp">Reports</span></div>
+          <div class="task-row"><div class="tc open"></div><span class="tl">Finalize pitch deck</span><span class="tp">Project</span></div>
+          <div class="task-row"><div class="tc open"></div><span class="tl">Respond to client emails</span><span class="tp">Inbox</span></div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><div class="mv">68%</div><div class="ml">Completed</div></div>
+          <div class="metric"><div class="mv">4.2h</div><div class="ml">Focus Time</div></div>
+          <div class="metric"><div class="mv">12</div><div class="ml">This Week</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<section class="section" id="pricing">
+  <span class="eyebrow">Pricing</span>
+  <h2 class="section-title">Simple, honest pricing.</h2>
+  <p class="section-sub">Start free. Upgrade when you're ready. No hidden fees, ever.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="pn">Free</div>
+      <div class="pp">$0<span> / mo</span></div>
+      <div class="pd">Perfect for getting started and exploring the platform.</div>
+      <ul class="pf">
+        <li>Up to 10 active tasks</li>
+        <li>Basic dashboard</li>
+        <li>Mobile app access</li>
+        <li>Email support</li>
+      </ul>
+      <button class="bp bp-g">Start for Free</button>
+    </div>
+    <div class="price-card hot">
+      <div class="pt">Most Popular</div>
+      <div class="pn">Pro</div>
+      <div class="pp">$12<span> / mo</span></div>
+      <div class="pd">For professionals and small teams who mean business.</div>
+      <ul class="pf">
+        <li>Unlimited tasks</li>
+        <li>AI Focus Coach</li>
+        <li>50+ integrations</li>
+        <li>Advanced analytics</li>
+        <li>Priority 24/7 support</li>
+      </ul>
+      <button class="bp bp-s">Start 14-Day Trial</button>
+    </div>
+    <div class="price-card">
+      <div class="pn">Enterprise</div>
+      <div class="pp">$39<span> / mo</span></div>
+      <div class="pd">Full-stack solutions for companies and large teams.</div>
+      <ul class="pf">
+        <li>Everything in Pro</li>
+        <li>Team management</li>
+        <li>Open API access</li>
+        <li>Full white-labeling</li>
+        <li>Dedicated account manager</li>
+      </ul>
+      <button class="bp bp-g">Contact Sales</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reviews">
+  <span class="eyebrow">Testimonials</span>
+  <h2 class="section-title">Trusted by thousands.</h2>
+  <p class="section-sub">Real words from real people who changed how they work.</p>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="tq">"ZenFlow completely changed how I work. I'm shipping twice as much in half the time. The AI coach is genuinely useful — not a gimmick."</p>
+      <div class="ta"><div class="av">A</div><div><div class="an">Alex Morrison</div><div class="ar">Senior Developer, Berlin</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="tq">"The cleanest productivity tool I've ever used. Beautiful interface, fast, and the integrations with Linear + Slack save me an hour every day."</p>
+      <div class="ta"><div class="av">S</div><div><div class="an">Sarah Chen</div><div class="ar">Product Manager, NYC</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <p class="tq">"We switched our whole team to ZenFlow. The analytics finally give us a clear picture of where our time goes. Absolutely worth it."</p>
+      <div class="ta"><div class="av">J</div><div><div class="an">Jake Rivera</div><div class="ar">Founder, Remotely</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band">
+  <h2>Ready to do your<br><em>best work?</em></h2>
+  <p>Join 50,000+ professionals who already use ZenFlow every day.</p>
+  <button class="btn-primary" style="font-size:17px;padding:18px 52px;">Get Started — It's Free</button>
+</div>
+
+<footer>
+  <div class="logo">Zen<span>Flow</span></div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+    <a href="#">Blog</a>
+  </div>
+  <div class="fc">© 2025 ZenFlow, Inc.</div>
+</footer>
+
+</body>
+</html>

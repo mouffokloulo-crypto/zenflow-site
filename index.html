@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT.VELO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --accent: #e8ff3a;
+            --accent2: #ff3a3a;
+            --text: #f0f0f0;
+            --muted: #555;
+            --border: #1e1e1e;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 12px; height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        .cursor-ring {
+            width: 36px; height: 36px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            height: 72px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 4px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-cta {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .nav-cta:hover { background: #fff; transform: scale(1.03); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 120px 48px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 80% 50%, rgba(232,255,58,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,58,58,0.04) 0%, transparent 60%);
+        }
+
+        .hero-tag {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-tag::before {
+            content: '';
+            display: block;
+            width: 32px; height: 1px;
+            background: var(--accent);
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(72px, 12vw, 160px);
+            line-height: 0.9;
+            letter-spacing: 2px;
+            margin-bottom: 32px;
+        }
+        .hero h1 .outline {
+            -webkit-text-stroke: 1px var(--text);
+            color: transparent;
+        }
+        .hero h1 .accent { color: var(--accent); }
+
+        .hero-desc {
+            max-width: 420px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 48px;
+        }
+
+        .hero-actions { display: flex; gap: 16px; align-items: center; }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+            padding: 14px 36px;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border: none;
+            cursor: none;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); background: #fff; }
+
+        .btn-ghost {
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+        .btn-ghost:hover { color: var(--text); }
+        .btn-ghost::after { content: '→'; }
+
+        /* STATS BAR */
+        .stats {
+            display: flex;
+            gap: 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 0 48px;
+        }
+        .stat {
+            flex: 1;
+            padding: 32px 40px;
+            border-right: 1px solid var(--border);
+        }
+        .stat:last-child { border-right: none; }
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .stat-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        /* BIKES SECTION */
+        .section {
+            padding: 100px 48px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(48px, 6vw, 80px);
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .section-title .dim { color: var(--muted); }
+
+        .bikes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .bike-card {
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 32px;
+            transition: transform 0.3s ease;
+        }
+        .bike-card:hover { transform: scale(1.01); }
+        .bike-card:hover .bike-overlay { opacity: 1; }
+
+        .bike-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, rgba(232,255,58,0.12) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .bike-visual {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            opacity: 0.15;
+            filter: grayscale(1);
+            transition: opacity 0.3s, filter 0.3s;
+        }
+        .bike-card:hover .bike-visual { opacity: 0.25; filter: none; }
+
+        .bike-tag {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .bike-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .bike-price {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* MARQUEE */
+        .marquee-wrap {
+            overflow: hidden;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            background: var(--surface);
+        }
+        .marquee {
+            display: flex;
+            gap: 64px;
+            animation: marquee 18s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-item {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 4px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        .marquee-item span { color: var(--accent); font-size: 16px; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 4px;
+            color: var(--muted);
+        }
+        .footer-logo span { color: var(--accent); }
+        footer p { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+
+        /* ANIMATIONS */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s forwards;
+        }
+        .fade-up:nth-child(2) { animation-delay: 0.1s; }
+        .fade-up:nth-child(3) { animation-delay: 0.2s; }
+        @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .hero, .section { padding-left: 20px; padding-right: 20px; }
+            .stats { margin: 0 20px; flex-direction: column; }
+            .stat { border-right: none; border-bottom: 1px solid var(--border); }
+            .bikes-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <nav>
+        <a href="#" class="nav-logo">YT<span>.</span>VELO</a>
+        <ul class="nav-links">
+            <li><a href="#">Models</a></li>
+            <li><a href="#">Tech</a></li>
+            <li><a href="#">Riders</a></li>
+            <li><a href="#">Journal</a></li>
+        </ul>
+        <button class="nav-cta">Shop Now</button>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-tag fade-up">2026 Collection</div>
+        <h1 class="fade-up">
+            RIDE<br>
+            <span class="outline">WITH</span><br>
+            <span class="accent">FURY</span>
+        </h1>
+        <p class="hero-desc fade-up">
+            Engineered for those who refuse to slow down. YT.VELO bikes are built for the terrain that breaks others.
+        </p>
+        <div class="hero-actions fade-up">
+            <button class="btn-primary">Explore Models</button>
+            <a href="#" class="btn-ghost">Watch Film</a>
+        </div>
+    </section>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-number">14°</div>
+            <div class="stat-label">Head Tube Angle</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">170mm</div>
+            <div class="stat-label">Travel</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">29"</div>
+            <div class="stat-label">Wheel Size</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">9.8kg</div>
+            <div class="stat-label">Frame Weight</div>
+        </div>
+    </div>
+
+    <div class="marquee-wrap">
+        <div class="marquee">
+            <div class="marquee-item">DOWNHILL <span>✦</span></div>
+            <div class="marquee-item">ENDURO <span>✦</span></div>
+            <div class="marquee-item">TRAIL <span>✦</span></div>
+            <div class="marquee-item">YT.VELO 2026 <span>✦</span></div>
+            <div class="marquee-item">CARBON FIBER <span>✦</span></div>
+            <div class="marquee-item">RACE PROVEN <span>✦</span></div>
+            <div class="marquee-item">DOWNHILL <span>✦</span></div>
+            <div class="marquee-item">ENDURO <span>✦</span></div>
+            <div class="marquee-item">TRAIL <span>✦</span></div>
+            <div class="marquee-item">YT.VELO 2026 <span>✦</span></div>
+            <div class="marquee-item">CARBON FIBER <span>✦</span></div>
+            <div class="marquee-item">RACE PROVEN <span>✦</span></div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title">THE<br><span class="dim">LINEUP</span></h2>
+            <a href="#" class="btn-ghost">All Models</a>
+        </div>
+
+        <div class="bikes-grid">
+            <div class="bike-card">
+                <div class="bike-visual">🚵</div>
+                <div class="bike-overlay"></div>
+                <div class="bike-tag">Downhill</div>
+                <div class="bike-name">CAPRA CF</div>
+                <div class="bike-price">From €5,999</div>
+            </div>
+            <div class="bike-card">
+                <div class="bike-visual">🚵</div>
+                <div class="bike-overlay"></div>
+                <div class="bike-tag">Enduro</div>
+                <div class="bike-name">JEFFSY</div>
+                <div class="bike-price">From €4,499</div>
+            </div>
+            <div class="bike-card">
+                <div class="bike-visual">🚵</div>
+                <div class="bike-overlay"></div>
+                <div class="bike-tag">Trail</div>
+                <div class="bike-name">IZZO</div>
+                <div class="bike-price">From €3,299</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">YT<span>.</span>VELO</div>
+        <p>© 2026 YT.VELO — All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const ring = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx - 6 + 'px';
+            cursor.style.top = my - 6 + 'px';
+        });
+
+        function animateRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx - 18 + 'px';
+            ring.style.top = ry - 18 + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        document.querySelectorAll('button, a, .bike-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+                ring.style.transform = 'scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                ring.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
